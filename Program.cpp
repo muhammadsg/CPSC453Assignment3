@@ -69,6 +69,9 @@ void Program::setupWindow() {
 		return;
 	}
 
+	//way to set information from key callback
+	glfwSetWindowUserPointer(window, this);
+	
 	//Set the custom function that tracks key presses
 	glfwSetKeyCallback(window, KeyCallback);
 
@@ -104,8 +107,25 @@ void ErrorCallback(int error, const char* description) {
 }
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	//Key codes are often prefixed with GLFW_KEY_ and can be found on the GLFW website
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, GL_TRUE);
+	if (action == GLFW_PRESS) {
+		Program* program = (Program*)glfwGetWindowUserPointer(window);
+		Scene* scene = program->getScene();
+		switch(key) {
+			// Change scenes
+			case GLFW_KEY_ESCAPE:
+				glfwSetWindowShouldClose(window, GL_TRUE);
+				std::cout << "Exiting program." << std::endl;
+				break;
+
+			case GLFW_KEY_1:
+				scene->changeTo(1);
+				break;
+
+			case GLFW_KEY_2:
+				scene->changeTo(2);
+				break;
+		}
 	}
+
 }
+

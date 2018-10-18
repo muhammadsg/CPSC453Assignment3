@@ -21,8 +21,16 @@ public:
 	Scene(RenderingEngine* renderer);
 	virtual ~Scene();
 
+	void drawFirst();
+	void drawSecond();
+
+	void changeTo(int scene);
+
 	//Send geometry to the renderer
 	void displayScene();
+
+	int sceneType;
+
 
 private:
 	RenderingEngine* renderer;
