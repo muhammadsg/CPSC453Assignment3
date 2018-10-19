@@ -21,6 +21,7 @@ public:
 	Scene(RenderingEngine* renderer);
 	virtual ~Scene();
 
+	void drawPoint();
 	void drawFirst();
 	void drawSecond();
 
@@ -35,8 +36,9 @@ public:
 private:
 	RenderingEngine* renderer;
 
-	//Geometry spiral;
+	//Geometry
 	Geometry quadraticBezier;
+
 
 	//list of objects in the scene
 	std::vector<Geometry> objects;

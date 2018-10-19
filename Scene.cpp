@@ -23,6 +23,9 @@
 
 Scene::Scene(RenderingEngine* renderer) : renderer(renderer) {
 
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	glPointSize(2);
+
 	changeTo(1);
 	
 	GlyphExtractor g;
@@ -51,6 +54,34 @@ void Scene::displayScene() {
 	renderer->RenderScene(objects);
 }
 
+void Scene::drawPoint(){
+	Geometry point;
+
+	point.drawMode = GL_POINTS;
+	point.verts.push_back(glm::vec3( 1.0f, 1.0f, 1.0f));
+	point.verts.push_back(glm::vec3( 2.0f, -1.0f, 1.0f));
+	point.verts.push_back(glm::vec3( 0.0f, -1.0f, 1.0f));
+
+	point.verts.push_back(glm::vec3( 0.0f, -1.0f, 1.0f));
+	point.verts.push_back(glm::vec3( -2.0f, -1.0f, 1.0f));
+	point.verts.push_back(glm::vec3( -1.0f, 1.0f, 1.0f));
+
+	point.verts.push_back(glm::vec3( -1.0f, 1.0f, 1.0f));
+	point.verts.push_back(glm::vec3( 0.0f, 1.0f, 1.0f));
+	point.verts.push_back(glm::vec3( 1.0f, 1.0f, 1.0f));
+
+	point.verts.push_back(glm::vec3( 1.2f, 0.5f, 1.0f));
+	point.verts.push_back(glm::vec3( 2.5f, 1.0f, 1.0f));
+	point.verts.push_back(glm::vec3( 1.3f, -0.4f, 1.0f));
+
+	point.colors.push_back(glm::vec3( 0.0f, 1.0f, 0.0f)); //Green
+
+	RenderingEngine::assignBuffers(point);
+
+	RenderingEngine::setBufferData(point);
+
+	objects.push_back(point);
+}
 
 void Scene::drawFirst() {
 

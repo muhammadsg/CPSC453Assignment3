@@ -16,10 +16,15 @@ out vec3 color; //Color goes to tesselation control shader
 
 void main()
 {
+    mat3x3 scalingMatrix = mat3x3(0.5, 0.0, 0.0, 
+                                  0.0, 0.5, 0.0, 
+                                  0.0, 0.0, 0.5);
+                                  
+    vec3 scaledPoint = scalingMatrix * VertexPosition;
 
     //vec4 translate = vec4(0.25, 0.25, 0.25, 0.25);
     // assign vertex position without modification
-    gl_Position = vec4(VertexPosition.xy, 0.0, 1.0);
+    gl_Position = vec4(scaledPoint.xy, 0.0, 1.0);
 
     // assign output colour to be interpolated
     color = VertexColor;
