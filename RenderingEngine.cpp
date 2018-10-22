@@ -33,7 +33,7 @@ void RenderingEngine::RenderScene(const std::vector<Geometry>& objects) {
 	// scene geometry, then tell OpenGL to draw our geometry
 	glUseProgram(shaderProgram);
 
-	glPatchParameteri(GL_PATCH_VERTICES, 3); //Says, for vertices passed in; every 2 vertices should be interpreted as a patch (3 for quadratic, 4 for cubic)
+	glPatchParameteri(GL_PATCH_VERTICES, 4); //Says, for vertices passed in; every 2 vertices should be interpreted as a patch (3 for quadratic, 4 for cubic)
 
 	for (const Geometry& g : objects) {
 		glBindVertexArray(g.vao);

@@ -16,9 +16,9 @@ out vec3 color; //Color goes to tesselation control shader
 
 void main()
 {
-    mat3x3 scalingMatrix = mat3x3(0.5, 0.0, 0.0, 
-                                  0.0, 0.5, 0.0, 
-                                  0.0, 0.0, 0.5);
+    mat3x3 scalingMatrix = mat3x3(0.1, 0.0, 0.0, 
+                                  0.0, 0.1, 0.0, 
+                                  0.0, 0.0, 0.1);
                                   
     vec3 scaledPoint = scalingMatrix * VertexPosition;
 

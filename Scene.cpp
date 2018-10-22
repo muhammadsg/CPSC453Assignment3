@@ -23,10 +23,11 @@
 
 Scene::Scene(RenderingEngine* renderer) : renderer(renderer) {
 
+	//Does nothing related to openGL
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glPointSize(2);
 
-	changeTo(1);
+	changeTo(2);
 	
 	GlyphExtractor g;
 	g.LoadFontFile("fonts/alex-brush/AlexBrush-Regular.ttf");
@@ -101,8 +102,12 @@ void Scene::drawFirst() {
 	quadraticBezier.verts.push_back(glm::vec3( 2.5f, 1.0f, 1.0f));
 	quadraticBezier.verts.push_back(glm::vec3( 1.3f, -0.4f, 1.0f));
 
-	quadraticBezier.colors.push_back(glm::vec3( 0.0f, 0.0f, 1.0f)); //Blue
-	quadraticBezier.colors.push_back(glm::vec3( 1.0f,  0.0f, 0.0f)); //Red
+	for(int i = 0; i < quadraticBezier.verts.size(); i++)
+	{
+		quadraticBezier.colors.push_back(glm::vec3( 0.0f, 0.0f, 1.0f)); //Blue
+		quadraticBezier.colors.push_back(glm::vec3( 1.0f,  0.0f, 0.0f)); //Red
+		quadraticBezier.colors.push_back(glm::vec3( 0.0f, 1.0f, 0.0f)); //Green
+	}
 
 	quadraticBezier.drawMode = GL_PATCHES; //If you want to use tesselation shader (for any parametric curve basically)
 
@@ -134,13 +139,22 @@ void Scene::drawSecond() {
 	quadraticBezier.verts.push_back(glm::vec3( 3.0f, 3.0f, 1.0f));
 	quadraticBezier.verts.push_back(glm::vec3( 5.0f, 2.0f, 1.0f));
 
+	quadraticBezier.verts.push_back(glm::vec3( 3.0f, 2.2f, 1.0f));
+	quadraticBezier.verts.push_back(glm::vec3( 3.5f, 2.7f, 1.0f));
+	quadraticBezier.verts.push_back(glm::vec3( 3.5f, 3.3f, 1.0f));
+	quadraticBezier.verts.push_back(glm::vec3( 3.0f, 3.8f, 1.0f));
+
 	quadraticBezier.verts.push_back(glm::vec3( 2.8f, 3.5f, 1.0f));
 	quadraticBezier.verts.push_back(glm::vec3( 2.4f, 3.8f, 1.0f));
 	quadraticBezier.verts.push_back(glm::vec3( 2.4f, 3.2f, 1.0f));
 	quadraticBezier.verts.push_back(glm::vec3( 2.8f, 3.5f, 1.0f));
 
-	quadraticBezier.colors.push_back(glm::vec3( 0.0f, 0.0f, 1.0f)); //Blue
-	quadraticBezier.colors.push_back(glm::vec3( 1.0f,  0.0f, 0.0f)); //Red
+	for(int i = 0; i < quadraticBezier.verts.size(); i++)
+	{
+		quadraticBezier.colors.push_back(glm::vec3( 0.0f, 0.0f, 1.0f)); //Blue
+		//quadraticBezier.colors.push_back(glm::vec3( 1.0f,  0.0f, 0.0f)); //Red
+		//quadraticBezier.colors.push_back(glm::vec3( 0.0f, 1.0f, 0.0f)); //Green
+	}
 
 	quadraticBezier.drawMode = GL_PATCHES; //If you want to use tesselation shader (for any parametric curve basically)
 
@@ -173,7 +187,7 @@ void Scene::changeTo(int scene) {
 
 		case 2:
 			drawSecond();
-			sceneName = "Part 1: Cubic Bezier";
+			sceneName = "Part 2: Cubic Bezier";
 			break;
 	}
 

@@ -36,6 +36,10 @@ public:
 
 	//Pointer to the current shader program being used to render
 	GLuint shaderProgram;
+
+	//GLuint ;
+
+	int curveType;
 };
 
 #endif /* RENDERINGENGINE_H_ */

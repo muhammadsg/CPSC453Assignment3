@@ -32,6 +32,7 @@ Program::~Program() {
 void Program::start() {
 	renderingEngine = new RenderingEngine();
 	scene = new Scene(renderingEngine);
+	//scene->initializeScene();
 
 	currentScene = scene;
 
