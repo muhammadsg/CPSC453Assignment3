@@ -89,11 +89,12 @@ GLuint ShaderTools::LinkProgram(GLuint vertexShader, GLuint fragmentShader, GLui
 	return programObject;
 }
 
-GLuint ShaderTools::InitializeShaders() {
+GLuint ShaderTools::InitializeShaders(int curveType) {
 	// load shader source from files
 	std::string vertexSource = LoadSource("shaders/vertex.glsl");
 	std::string fragmentSource = LoadSource("shaders/fragment.glsl");
 	std::string tcsSource = LoadSource("shaders/tessControl.glsl");
+	std::string tcsSource2 = LoadSource("shaders/tessControl2.glsl");
 	std::string tesSource = LoadSource("shaders/tessEval.glsl");
 	if (vertexSource.empty() || fragmentSource.empty() || tcsSource.empty() || tesSource.empty()) return false;
 
@@ -101,14 +102,19 @@ GLuint ShaderTools::InitializeShaders() {
 	GLuint vertex = CompileShader(GL_VERTEX_SHADER, vertexSource);
 	GLuint fragment = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
 	GLuint tcs = CompileShader(GL_TESS_CONTROL_SHADER, tcsSource);
+	GLuint tcs2 = CompileShader(GL_TESS_CONTROL_SHADER, tcsSource2);
 	GLuint tes = CompileShader(GL_TESS_EVALUATION_SHADER, tesSource);
 
 	// link shader program
 	GLuint program = LinkProgram(vertex, fragment, tcs, tes);
 
+	if (curveType == 1)
+	program = LinkProgram(vertex, fragment, tcs2, tes);
+
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
 	glDeleteShader(tcs);
+	glDeleteShader(tcs2);
 	glDeleteShader(tes);
 
 	// check for OpenGL errors and return false if error occurred

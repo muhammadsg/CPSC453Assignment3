@@ -36,9 +36,9 @@ public:
 
 	//Pointer to the current shader program being used to render
 	GLuint shaderProgram;
+	GLuint shaderProgram2;
 
-	//GLuint ;
-
+	GLuint location;
 	int curveType;
 };
 

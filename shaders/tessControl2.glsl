@@ -1,6 +1,6 @@
 #version 410
 
-layout(vertices=3) out;
+layout(vertices=4) out;
 
 in vec3 color[];
 out vec3 teColour[];	

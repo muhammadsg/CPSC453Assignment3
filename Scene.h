@@ -22,6 +22,7 @@ public:
 	virtual ~Scene();
 
 	void drawPoint();
+	void drawScene();
 	void drawFirst();
 	void drawSecond();
 
@@ -38,6 +39,7 @@ private:
 
 	//Geometry
 	Geometry quadraticBezier;
+	Geometry cubicBezier;
 
 
 	//list of objects in the scene

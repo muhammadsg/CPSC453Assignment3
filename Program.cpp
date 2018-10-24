@@ -35,6 +35,8 @@ void Program::start() {
 	//scene->initializeScene();
 
 	currentScene = scene;
+	scene->drawScene();
+
 
 	//Main render loop
 	while(!glfwWindowShouldClose(window)) {
@@ -119,12 +121,17 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				break;
 
 			case GLFW_KEY_1:
+			{
+				program->renderingEngine -> curveType = 0;
 				scene->changeTo(1);
 				break;
-
+			}
 			case GLFW_KEY_2:
+			{
+				program->renderingEngine -> curveType = 1;
 				scene->changeTo(2);
 				break;
+			}
 		}
 	}
 

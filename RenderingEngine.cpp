@@ -13,11 +13,17 @@
 #include "ShaderTools.h"
 
 RenderingEngine::RenderingEngine() {
-	shaderProgram = ShaderTools::InitializeShaders();
-	if (shaderProgram == 0) {
+	
+	shaderProgram = ShaderTools::InitializeShaders(0);
+	shaderProgram2 = ShaderTools::InitializeShaders(1);
+	if (shaderProgram == 0 | shaderProgram2 == 0) {
 		std::cout << "Program could not initialize shaders, TERMINATING" << std::endl;
 		return;
 	}
+
+
+location = glGetUniformLocation(shaderProgram, "curveType");
+
 }
 
 RenderingEngine::~RenderingEngine() {
@@ -32,8 +38,15 @@ void RenderingEngine::RenderScene(const std::vector<Geometry>& objects) {
 	// bind our shader program and the vertex array object containing our
 	// scene geometry, then tell OpenGL to draw our geometry
 	glUseProgram(shaderProgram);
+	glPatchParameteri(GL_PATCH_VERTICES, 3); //Says, for vertices passed in; every 3 vertices should be interpreted as a patch (3 for quadratic, 4 for cubic)
 
-	glPatchParameteri(GL_PATCH_VERTICES, 4); //Says, for vertices passed in; every 2 vertices should be interpreted as a patch (3 for quadratic, 4 for cubic)
+	if (curveType == 1)
+	{
+		glUseProgram(shaderProgram2);
+		glPatchParameteri(GL_PATCH_VERTICES, 4); //Says, for vertices passed in; every 3 vertices should be interpreted as a patch (3 for quadratic, 4 for cubic)
+	}
+
+	glUniform1i(location, curveType);
 
 	for (const Geometry& g : objects) {
 		glBindVertexArray(g.vao);

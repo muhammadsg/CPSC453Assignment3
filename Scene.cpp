@@ -21,13 +21,14 @@
 
 #include "GlyphExtractor.h"
 
+
 Scene::Scene(RenderingEngine* renderer) : renderer(renderer) {
 
 	//Does nothing related to openGL
+
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glPointSize(2);
 
-	changeTo(2);
 	
 	GlyphExtractor g;
 	g.LoadFontFile("fonts/alex-brush/AlexBrush-Regular.ttf");
@@ -84,7 +85,9 @@ void Scene::drawPoint(){
 	objects.push_back(point);
 }
 
-void Scene::drawFirst() {
+void Scene::drawScene() {
+	quadraticBezier.verts.clear();
+	quadraticBezier.colors.clear();
 
 	quadraticBezier.verts.push_back(glm::vec3( 1.0f, 1.0f, 1.0f));
 	quadraticBezier.verts.push_back(glm::vec3( 2.0f, -1.0f, 1.0f));
@@ -118,55 +121,58 @@ void Scene::drawFirst() {
 	//Must be done every time the triangle is modified in any way, ex. verts, colors, normals, uvs, etc.
 	RenderingEngine::setBufferData(quadraticBezier);
 
-	//Add the triangle to the scene objects
+	cubicBezier.verts.clear();
+	cubicBezier.colors.clear();
+		
+	cubicBezier.verts.push_back(glm::vec3( 1.0f, 1.0f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 4.0f, 0.0f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 6.0f, 2.0f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 9.0f, 1.0f, 1.0f));
+
+	cubicBezier.verts.push_back(glm::vec3( 8.0f, 2.0f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 0.0f, 8.0f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 0.0f, -2.0f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 8.0f, 4.0f, 1.0f));
+
+	cubicBezier.verts.push_back(glm::vec3( 5.0f, 3.0f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 3.0f, 2.0f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 3.0f, 3.0f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 5.0f, 2.0f, 1.0f));
+
+	cubicBezier.verts.push_back(glm::vec3( 3.0f, 2.2f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 3.5f, 2.7f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 3.5f, 3.3f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 3.0f, 3.8f, 1.0f));
+
+	cubicBezier.verts.push_back(glm::vec3( 2.8f, 3.5f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 2.4f, 3.8f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 2.4f, 3.2f, 1.0f));
+	cubicBezier.verts.push_back(glm::vec3( 2.8f, 3.5f, 1.0f));
+
+	for(int i = 0; i < cubicBezier.verts.size(); i++)
+	{
+		cubicBezier.colors.push_back(glm::vec3( 0.0f, 0.0f, 1.0f)); //Blue
+	}
+
+	cubicBezier.drawMode = GL_PATCHES; //If you want to use tesselation shader (for any parametric curve basically)
+
+	//Construct vao and vbos for the triangle
+	RenderingEngine::assignBuffers(cubicBezier);
+
+	//Send the triangle data to the GPU
+	//Must be done every time the triangle is modified in any way, ex. verts, colors, normals, uvs, etc.
+	RenderingEngine::setBufferData(cubicBezier);
+
+
+}
+void Scene::drawFirst() {
+	//Add the quadratic to the scene objects
 	objects.push_back(quadraticBezier);
 }
 
 void Scene::drawSecond() {
-
-	quadraticBezier.verts.push_back(glm::vec3( 1.0f, 1.0f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 4.0f, 0.0f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 6.0f, 2.0f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 9.0f, 1.0f, 1.0f));
-
-	quadraticBezier.verts.push_back(glm::vec3( 8.0f, 2.0f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 0.0f, 8.0f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 0.0f, -2.0f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 8.0f, 4.0f, 1.0f));
-
-	quadraticBezier.verts.push_back(glm::vec3( 5.0f, 3.0f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 3.0f, 2.0f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 3.0f, 3.0f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 5.0f, 2.0f, 1.0f));
-
-	quadraticBezier.verts.push_back(glm::vec3( 3.0f, 2.2f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 3.5f, 2.7f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 3.5f, 3.3f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 3.0f, 3.8f, 1.0f));
-
-	quadraticBezier.verts.push_back(glm::vec3( 2.8f, 3.5f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 2.4f, 3.8f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 2.4f, 3.2f, 1.0f));
-	quadraticBezier.verts.push_back(glm::vec3( 2.8f, 3.5f, 1.0f));
-
-	for(int i = 0; i < quadraticBezier.verts.size(); i++)
-	{
-		quadraticBezier.colors.push_back(glm::vec3( 0.0f, 0.0f, 1.0f)); //Blue
-		//quadraticBezier.colors.push_back(glm::vec3( 1.0f,  0.0f, 0.0f)); //Red
-		//quadraticBezier.colors.push_back(glm::vec3( 0.0f, 1.0f, 0.0f)); //Green
-	}
-
-	quadraticBezier.drawMode = GL_PATCHES; //If you want to use tesselation shader (for any parametric curve basically)
-
-	//Construct vao and vbos for the triangle
-	RenderingEngine::assignBuffers(quadraticBezier);
-
-	//Send the triangle data to the GPU
-	//Must be done every time the triangle is modified in any way, ex. verts, colors, normals, uvs, etc.
-	RenderingEngine::setBufferData(quadraticBezier);
-
-	//Add the triangle to the scene objects
-	objects.push_back(quadraticBezier);
+	//Add the cubic to the scene objects
+	objects.push_back(cubicBezier);
 }
 
 /**

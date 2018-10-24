@@ -21,7 +21,7 @@ namespace ShaderTools {
 
 	GLuint LinkProgram(GLuint vertexShader, GLuint fragmentShader, GLuint tcsShader, GLuint tesShader);
 
-	GLuint InitializeShaders();
+	GLuint InitializeShaders(int curveType);
 
 }
 

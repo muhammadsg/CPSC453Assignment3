@@ -30,11 +30,12 @@ public:
 
 	Scene* getScene() {return scene;}
 	
+	RenderingEngine* renderingEngine;
+	
 private:
 	GLFWwindow* window;
-	RenderingEngine* renderingEngine;
-	Scene* scene;
 
+	Scene* scene;
 
 };
 
