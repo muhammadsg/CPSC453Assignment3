@@ -25,6 +25,9 @@ public:
 
 	//Renders each object
 	void RenderScene(const std::vector<Geometry>& objects);
+	void RenderLine(const std::vector<Geometry>& objects);
+	void RenderQuadratic(const std::vector<Geometry>& objects);
+	void RenderCubic(const std::vector<Geometry>& objects);
 
 	//Create vao and vbos for objects
 	static void assignBuffers(Geometry& geometry);
@@ -37,6 +40,7 @@ public:
 	//Pointer to the current shader program being used to render
 	GLuint shaderProgram;
 	GLuint shaderProgram2;
+	GLuint lineShaderProgram;
 
 	GLuint location;
 	int curveType;

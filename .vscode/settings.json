@@ -40,6 +40,8 @@
         "deque": "cpp",
         "iomanip": "cpp",
         "memory": "cpp",
-        "numeric": "cpp"
+        "numeric": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp"
     }
 }

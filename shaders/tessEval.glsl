@@ -15,7 +15,7 @@ void main()
 	vec3 startColour = teColour[2]; //Start color is green
 	vec3 endColour = teColour[1]; //End color is blue
 
-	if (curveType == 0)
+	if (curveType == 2)
 	{
 		vec2 p0 = gl_in[0].gl_Position.xy;
 		vec2 p1 = gl_in[1].gl_Position.xy;
@@ -28,7 +28,7 @@ void main()
 		position = b0*p0 + b1*p1 + b2*p2; 
 	}
 
-	if (curveType == 1)
+	if (curveType == 3)
 	{
 		vec2 p0 = gl_in[0].gl_Position.xy;
 		vec2 p1 = gl_in[1].gl_Position.xy;

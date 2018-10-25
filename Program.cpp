@@ -9,6 +9,8 @@
 
 #include <iostream>
 #include <string>
+#include <chrono>
+#include <ctime>
 
 //**Must include glad and GLFW in this order or it breaks**
 #include <glad/glad.h>
@@ -37,12 +39,15 @@ void Program::start() {
 	currentScene = scene;
 	scene->drawScene();
 
-
 	//Main render loop
 	while(!glfwWindowShouldClose(window)) {
+		auto start = std::chrono::system_clock::now();
 		scene->displayScene();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		auto end = std::chrono::system_clock::now();
+		std::chrono::duration<float> elapsed_seconds = end-start;
+		scene->updateFrame(elapsed_seconds.count());
 	}
 
 }
@@ -122,20 +127,24 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 			case GLFW_KEY_1:
 			{
-				program->renderingEngine -> curveType = 0;
+				program->renderingEngine -> curveType = 2;
 				scene->changeTo(1);
 				break;
 			}
 			case GLFW_KEY_2:
 			{
-				program->renderingEngine -> curveType = 1;
+				program->renderingEngine -> curveType = 3;
 				scene->changeTo(2);
 				break;
 			}
 			case GLFW_KEY_3:
 			{
-				program->renderingEngine->curveType = 1;
 				scene->changeTo(3);
+				break;
+			}
+			case GLFW_KEY_4:
+			{
+				scene->changeTo(4);
 				break;
 			}
 		}

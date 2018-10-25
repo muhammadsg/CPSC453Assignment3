@@ -13,10 +13,10 @@
 #include "ShaderTools.h"
 
 RenderingEngine::RenderingEngine() {
-	
-	shaderProgram = ShaderTools::InitializeShaders(0);
-	shaderProgram2 = ShaderTools::InitializeShaders(1);
-	if (shaderProgram == 0 | shaderProgram2 == 0) {
+	lineShaderProgram = ShaderTools::InitializeShaders(1);
+	shaderProgram = ShaderTools::InitializeShaders(2);
+	shaderProgram2 = ShaderTools::InitializeShaders(3);
+	if (lineShaderProgram == 0 || shaderProgram == 0 || shaderProgram2 == 0) {
 		std::cout << "Program could not initialize shaders, TERMINATING" << std::endl;
 		return;
 	}
@@ -38,7 +38,7 @@ void RenderingEngine::RenderScene(const std::vector<Geometry>& objects) {
 	glUseProgram(shaderProgram);
 	glPatchParameteri(GL_PATCH_VERTICES, 3); //Says, for vertices passed in; every 3 vertices should be interpreted as a patch (3 for quadratic, 4 for cubic)
 
-	if (curveType == 1)
+	if (curveType == 3)
 	{
 		glUseProgram(shaderProgram2);
 		glPatchParameteri(GL_PATCH_VERTICES, 4); //Says, for vertices passed in; every 3 vertices should be interpreted as a patch (3 for quadratic, 4 for cubic)
@@ -56,6 +56,53 @@ void RenderingEngine::RenderScene(const std::vector<Geometry>& objects) {
 	glUseProgram(0);
 
 	// check for an report any OpenGL errors
+	CheckGLErrors();
+}
+
+void RenderingEngine::RenderLine(const std::vector<Geometry>& objects) {
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+	//Clears the screen to a dark grey background
+	glUseProgram(lineShaderProgram);
+
+	for (const Geometry& g : objects) {
+		glBindVertexArray(g.vao);
+		glDrawArrays(g.drawMode, 0, g.verts.size());
+		glBindVertexArray(0);
+	}
+
+	glUseProgram(0);
+	CheckGLErrors();
+}
+
+void RenderingEngine::RenderQuadratic(const std::vector<Geometry>& objects) {
+	glUseProgram(shaderProgram);
+	glPatchParameteri(GL_PATCH_VERTICES, 3);
+	glUniform1i(location, /*curveType=*/2);
+
+	for (const Geometry& g : objects) {
+		glBindVertexArray(g.vao);
+		glDrawArrays(g.drawMode, 0, g.verts.size());
+		glBindVertexArray(0);
+	}
+
+	glUseProgram(0);
+	CheckGLErrors();
+}
+
+void RenderingEngine::RenderCubic(const std::vector<Geometry>& objects) {
+	glUseProgram(shaderProgram2);
+	glPatchParameteri(GL_PATCH_VERTICES, 4);
+	glUniform1i(location, /*curveType=*/3);
+
+	for (const Geometry& g : objects) {
+		glBindVertexArray(g.vao);
+		glDrawArrays(g.drawMode, 0, g.verts.size());
+		glBindVertexArray(0);
+	}
+
+	glUseProgram(0);
 	CheckGLErrors();
 }
 

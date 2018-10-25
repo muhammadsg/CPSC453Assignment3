@@ -8,6 +8,7 @@
 #include "Scene.h"
 
 #include <iostream>
+#include <algorithm>
 
 #include "RenderingEngine.h"
 
@@ -22,7 +23,7 @@
 #include "GlyphExtractor.h"
 
 
-Scene::Scene(RenderingEngine* renderer) : renderer(renderer) {
+Scene::Scene(RenderingEngine* renderer) : renderer(renderer), pixelsPerSec(10) {
 
 	//Does nothing related to openGL
 
@@ -35,7 +36,10 @@ Scene::~Scene() {
 }
 
 void Scene::displayScene() {
-	renderer->RenderScene(objects);
+	// renderer->RenderScene(objects);
+	if (!lines.empty()) renderer->RenderLine(lines);
+	if (!quadratics.empty()) renderer->RenderQuadratic(quadratics);
+	if (!cubics.empty()) renderer->RenderCubic(cubics);
 }
 
 void Scene::drawPoint(){
@@ -155,56 +159,108 @@ void Scene::drawSecond() {
 	objects.push_back(cubicBezier);
 }
 
+void Scene::drawScrollingText() {
+	lines.clear();
+	quadratics.clear();
+	cubics.clear();
+	glyphs.clear();
+	GlyphExtractor g;
+	g.LoadFontFile("fonts/alex-brush/AlexBrush-Regular.ttf");
+
+	const std::string text = "The quick brown fox jumps over the lazy dog.";
+	float curX = 1.0f;
+	for (char c : text) {
+		MyGlyph glyph = g.ExtractGlyph(c);
+		glyphs.push_back({curX, glyph});
+		curX += glyph.advance;
+	}
+}
+
+void Scene::updateFrame(float secs) {
+	if (glyphs.empty()) {
+		return;
+	}
+	float endX = 0.0f;
+	for (auto& glyphPair : glyphs) {
+		glyphPair.first -= secs * pixelsPerSec;
+		endX = std::max(endX, glyphPair.first + glyphPair.second.advance);
+	}
+	if (glyphs[0].first + glyphs[0].second.advance < -1.1f) {
+		glyphs[0].first = endX;
+	}
+	std::sort(glyphs.begin(), glyphs.end(),
+		[](std::pair<float, MyGlyph>& a, std::pair<float, MyGlyph>& b) {
+		return a.first < b.first;
+	});
+
+	lines.clear();
+	quadratics.clear();
+	cubics.clear();
+	float curX = glyphs[0].first;
+	for (auto glyphPair : glyphs) {
+		MyGlyph g = glyphPair.second;
+		for (unsigned int i = 0; i < g.contours.size(); i++) {
+			for(MySegment s : g.contours[i]) {
+				Geometry letter;
+				for (int k = 0; k <= s.degree; k++) {
+					letter.verts.push_back(glm::vec3(curX + s.x[k], s.y[k], 0.0f));
+					letter.colors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+				}
+				RenderingEngine::assignBuffers(letter);
+				RenderingEngine::setBufferData(letter);
+				if (s.degree == 1) {
+					letter.drawMode = GL_LINES;
+					lines.push_back(letter);
+				} else if (s.degree == 2) {
+					letter.drawMode = GL_PATCHES;
+					quadratics.push_back(letter);
+				} else {
+					letter.drawMode = GL_PATCHES;
+					cubics.push_back(letter);
+				}
+			}
+		}
+		curX += g.advance;
+	}
+}
+
 void Scene::drawName() {
+	lines.clear();
+	quadratics.clear();
+	cubics.clear();
+
 	GlyphExtractor g;
 	g.LoadFontFile("fonts/alex-brush/AlexBrush-Regular.ttf");
 	const std::string name1 = "Mohammad";
 	const std::string name2 = "Tony";
 
-	float gap = 5.0f;
-	float curX = 0.0f;
+	float curX = -1.0f;
 	for (char c : name2) {
 		MyGlyph glyph = g.ExtractGlyph(c);
 		for (unsigned int i = 0; i < glyph.contours.size(); i++) {
-			for(unsigned int j = 0; j < glyph.contours[i].size(); j++) {
+			for(MySegment s : glyph.contours[i]) {
 				Geometry letter;
-				letter.drawMode = GL_PATCHES;
-				letter.verts = elevateBezierCurve(glyph.contours[i][j]);
-				for (int i = 0; i < letter.verts.size(); i++) {
+				for (int k = 0; k <= s.degree; k++) {
+					letter.verts.push_back(glm::vec3(curX + s.x[k], s.y[k], 0.0f));
 					letter.colors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
-				}
-				for (glm::vec3& v : letter.verts) {
-					v.x += curX;
-					std::cout << v.x << ' ' << v.y << std::endl;
 				}
 				RenderingEngine::assignBuffers(letter);
 				RenderingEngine::setBufferData(letter);
-				objects.push_back(letter);
+				if (s.degree == 1) {
+					letter.drawMode = GL_LINES;
+					lines.push_back(letter);
+				} else if (s.degree == 2) {
+					letter.drawMode = GL_PATCHES;
+					quadratics.push_back(letter);
+				} else {
+					letter.drawMode = GL_PATCHES;
+					cubics.push_back(letter);
+				}
 			}
 		}
-		curX += 0.3f;
+		std::cout << glyph.advance << std::endl;
+		curX += glyph.advance;
 	}
-}
-
-std::vector<glm::vec3> Scene::elevateBezierCurve(MySegment s) {
-	const int MAX_DEG = 3;
-	std::vector<glm::vec3> ret;
-	int d = s.degree;
-	for (int i = 0; i <= d; i++) {
-		ret.push_back(glm::vec3(s.x[i], s.y[i], 0.0f));
-	}
-	while (d < MAX_DEG) {
-		d++;
-		std::vector<glm::vec3> tmp;
-		tmp.push_back(ret[0]);
-		for (int i = 1; i < ret.size(); i++) {
-			glm::vec3 v = glm::mix(ret[i-1], ret[i], 1.0f - float(i)/float(d));
-			tmp.push_back(v);
-		}
-		tmp.push_back(ret[1]);
-		ret = tmp;
-	}
-	return ret;
 }
 
 /**
@@ -229,6 +285,10 @@ void Scene::changeTo(int scene) {
 		case 3:
 			drawName();
 			sceneName = "Part 3: Drawing name";
+			break;
+		case 4:
+			drawScrollingText();
+			sceneName = "Part 4: Drawing scrolling text";
 			break;
 	}
 

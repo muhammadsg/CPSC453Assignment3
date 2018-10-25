@@ -106,10 +106,11 @@ GLuint ShaderTools::InitializeShaders(int curveType) {
 	GLuint tes = CompileShader(GL_TESS_EVALUATION_SHADER, tesSource);
 
 	// link shader program
-	GLuint program = LinkProgram(vertex, fragment, tcs, tes);
-
-	if (curveType == 1)
-	program = LinkProgram(vertex, fragment, tcs2, tes);
+	GLuint program;
+	
+	if (curveType == 2) program = LinkProgram(vertex, fragment, tcs, tes);
+	else if (curveType == 3) program = LinkProgram(vertex, fragment, tcs2, tes);
+	else program = LinkProgram(vertex, fragment, 0, 0);
 
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
