@@ -47,7 +47,8 @@ void Program::start() {
 		glfwPollEvents();
 		auto end = std::chrono::system_clock::now();
 		std::chrono::duration<float> elapsed_seconds = end-start;
-		scene->updateFrame(elapsed_seconds.count());
+		float seconds = elapsed_seconds.count();
+		scene->updateFrame(seconds);
 	}
 
 }
@@ -149,6 +150,5 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			}
 		}
 	}
-
 }
 

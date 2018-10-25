@@ -25,9 +25,9 @@ public:
 
 	//Renders each object
 	void RenderScene(const std::vector<Geometry>& objects);
-	void RenderLine(const std::vector<Geometry>& objects);
-	void RenderQuadratic(const std::vector<Geometry>& objects);
-	void RenderCubic(const std::vector<Geometry>& objects);
+	void RenderLine(std::vector<Geometry>& objects);
+	void RenderQuadratic(std::vector<Geometry>& objects);
+	void RenderCubic(std::vector<Geometry>& objects);
 
 	//Create vao and vbos for objects
 	static void assignBuffers(Geometry& geometry);

@@ -58,6 +58,9 @@ private:
 	float pixelsPerSec;
 	
 	std::vector<std::pair<float, MyGlyph>> glyphs;
+	bool scrolling;
+
+	void deleteGeometries(std::vector<Geometry>& geometries);
 };
 
 #endif /* SCENE_H_ */

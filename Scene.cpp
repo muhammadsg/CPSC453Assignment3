@@ -23,7 +23,7 @@
 #include "GlyphExtractor.h"
 
 
-Scene::Scene(RenderingEngine* renderer) : renderer(renderer), pixelsPerSec(10) {
+Scene::Scene(RenderingEngine* renderer) : renderer(renderer), pixelsPerSec(3), scrolling(false) {
 
 	//Does nothing related to openGL
 
@@ -177,7 +177,7 @@ void Scene::drawScrollingText() {
 }
 
 void Scene::updateFrame(float secs) {
-	if (glyphs.empty()) {
+	if (glyphs.empty() || !scrolling) {
 		return;
 	}
 	float endX = 0.0f;
@@ -187,15 +187,15 @@ void Scene::updateFrame(float secs) {
 	}
 	if (glyphs[0].first + glyphs[0].second.advance < -1.1f) {
 		glyphs[0].first = endX;
+		std::sort(glyphs.begin(), glyphs.end(),
+			[](std::pair<float, MyGlyph>& a, std::pair<float, MyGlyph>& b) {
+			return a.first < b.first;
+		});
 	}
-	std::sort(glyphs.begin(), glyphs.end(),
-		[](std::pair<float, MyGlyph>& a, std::pair<float, MyGlyph>& b) {
-		return a.first < b.first;
-	});
 
-	lines.clear();
-	quadratics.clear();
-	cubics.clear();
+	deleteGeometries(lines);
+	deleteGeometries(quadratics);
+	deleteGeometries(cubics);
 	float curX = glyphs[0].first;
 	for (auto glyphPair : glyphs) {
 		MyGlyph g = glyphPair.second;
@@ -222,6 +222,13 @@ void Scene::updateFrame(float secs) {
 		}
 		curX += g.advance;
 	}
+}
+
+void Scene::deleteGeometries(std::vector<Geometry>& geometry) {
+	for (Geometry g : geometry) {
+		RenderingEngine::deleteBufferData(g);
+	}
+	geometry.clear();
 }
 
 void Scene::drawName() {
@@ -277,18 +284,22 @@ void Scene::changeTo(int scene) {
 		case 1:
 			drawFirst();
 			sceneName = "Part 1: Quadratic Bezier";
+			scrolling = false;
 			break;
 		case 2:
 			drawSecond();
 			sceneName = "Part 2: Cubic Bezier";
+			scrolling = false;
 			break;
 		case 3:
 			drawName();
 			sceneName = "Part 3: Drawing name";
+			scrolling = false;
 			break;
 		case 4:
 			drawScrollingText();
 			sceneName = "Part 4: Drawing scrolling text";
+			scrolling = true;
 			break;
 	}
 

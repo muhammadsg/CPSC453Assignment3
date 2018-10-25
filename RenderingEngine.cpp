@@ -59,14 +59,14 @@ void RenderingEngine::RenderScene(const std::vector<Geometry>& objects) {
 	CheckGLErrors();
 }
 
-void RenderingEngine::RenderLine(const std::vector<Geometry>& objects) {
+void RenderingEngine::RenderLine(std::vector<Geometry>& objects) {
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
 	//Clears the screen to a dark grey background
 	glUseProgram(lineShaderProgram);
 
-	for (const Geometry& g : objects) {
+	for (Geometry& g : objects) {
 		glBindVertexArray(g.vao);
 		glDrawArrays(g.drawMode, 0, g.verts.size());
 		glBindVertexArray(0);
@@ -76,12 +76,12 @@ void RenderingEngine::RenderLine(const std::vector<Geometry>& objects) {
 	CheckGLErrors();
 }
 
-void RenderingEngine::RenderQuadratic(const std::vector<Geometry>& objects) {
+void RenderingEngine::RenderQuadratic(std::vector<Geometry>& objects) {
 	glUseProgram(shaderProgram);
 	glPatchParameteri(GL_PATCH_VERTICES, 3);
 	glUniform1i(location, /*curveType=*/2);
 
-	for (const Geometry& g : objects) {
+	for (Geometry& g : objects) {
 		glBindVertexArray(g.vao);
 		glDrawArrays(g.drawMode, 0, g.verts.size());
 		glBindVertexArray(0);
@@ -91,12 +91,12 @@ void RenderingEngine::RenderQuadratic(const std::vector<Geometry>& objects) {
 	CheckGLErrors();
 }
 
-void RenderingEngine::RenderCubic(const std::vector<Geometry>& objects) {
+void RenderingEngine::RenderCubic(std::vector<Geometry>& objects) {
 	glUseProgram(shaderProgram2);
 	glPatchParameteri(GL_PATCH_VERTICES, 4);
 	glUniform1i(location, /*curveType=*/3);
 
-	for (const Geometry& g : objects) {
+	for (Geometry& g : objects) {
 		glBindVertexArray(g.vao);
 		glDrawArrays(g.drawMode, 0, g.verts.size());
 		glBindVertexArray(0);
