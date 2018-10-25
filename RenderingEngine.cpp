@@ -21,9 +21,7 @@ RenderingEngine::RenderingEngine() {
 		return;
 	}
 
-
-location = glGetUniformLocation(shaderProgram, "curveType");
-
+	location = glGetUniformLocation(shaderProgram, "curveType");
 }
 
 RenderingEngine::~RenderingEngine() {
@@ -90,8 +88,6 @@ void RenderingEngine::assignBuffers(Geometry& geometry) {
 	glBindBuffer(GL_ARRAY_BUFFER, geometry.uvBuffer);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(1);*/
-
-
 }
 
 void RenderingEngine::setBufferData(Geometry& geometry) {

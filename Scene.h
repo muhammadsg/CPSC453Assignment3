@@ -15,6 +15,7 @@
 //Forward declaration of classes
 //(note this is necessary because these are pointers and it allows the #include to appear in the .cpp file)
 class RenderingEngine;
+struct MySegment;
 
 class Scene {
 public:
@@ -25,6 +26,7 @@ public:
 	void drawScene();
 	void drawFirst();
 	void drawSecond();
+	void drawName();
 
 	void changeTo(int scene);
 
@@ -40,10 +42,12 @@ private:
 	//Geometry
 	Geometry quadraticBezier;
 	Geometry cubicBezier;
-
+	Geometry letter;
 
 	//list of objects in the scene
 	std::vector<Geometry> objects;
+
+	std::vector<glm::vec3> elevateBezierCurve(MySegment s);
 };
 
 #endif /* SCENE_H_ */

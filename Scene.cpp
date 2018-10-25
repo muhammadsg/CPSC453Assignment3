@@ -28,24 +28,6 @@ Scene::Scene(RenderingEngine* renderer) : renderer(renderer) {
 
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glPointSize(2);
-
-	
-	GlyphExtractor g;
-	g.LoadFontFile("fonts/alex-brush/AlexBrush-Regular.ttf");
-	MyGlyph a = g.ExtractGlyph('a');
-
-	for (unsigned int i = 0; i < a.contours.size(); i++) { //Given a has an outside contour for outline and inner for the "circle" inside the a
-		std::cout << "Contour " << i << std::endl;
-		for(unsigned int j = 0; j < a.contours[i].size(); j++) {
-			std::cout << "Bezier curve " << j << std::endl; //A line will have 2 control points, quadratic will have 3, and cubic curve will have 4 control points
-			for(unsigned int k = 0; k <= a.contours[i][j].degree; k++) {
-				std::cout << "x " << a.contours[i][j].x[k] << std::endl;
-				std::cout << "y " << a.contours[i][j].y[k] << std::endl;
-				std::cout << std::endl;
-			}
-		}
-	}
-
 }
 
 Scene::~Scene() {
@@ -162,8 +144,6 @@ void Scene::drawScene() {
 	//Send the triangle data to the GPU
 	//Must be done every time the triangle is modified in any way, ex. verts, colors, normals, uvs, etc.
 	RenderingEngine::setBufferData(cubicBezier);
-
-
 }
 void Scene::drawFirst() {
 	//Add the quadratic to the scene objects
@@ -173,6 +153,58 @@ void Scene::drawFirst() {
 void Scene::drawSecond() {
 	//Add the cubic to the scene objects
 	objects.push_back(cubicBezier);
+}
+
+void Scene::drawName() {
+	GlyphExtractor g;
+	g.LoadFontFile("fonts/alex-brush/AlexBrush-Regular.ttf");
+	const std::string name1 = "Mohammad";
+	const std::string name2 = "Tony";
+
+	float gap = 5.0f;
+	float curX = 0.0f;
+	for (char c : name2) {
+		MyGlyph glyph = g.ExtractGlyph(c);
+		for (unsigned int i = 0; i < glyph.contours.size(); i++) {
+			for(unsigned int j = 0; j < glyph.contours[i].size(); j++) {
+				Geometry letter;
+				letter.drawMode = GL_PATCHES;
+				letter.verts = elevateBezierCurve(glyph.contours[i][j]);
+				for (int i = 0; i < letter.verts.size(); i++) {
+					letter.colors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+				}
+				for (glm::vec3& v : letter.verts) {
+					v.x += curX;
+					std::cout << v.x << ' ' << v.y << std::endl;
+				}
+				RenderingEngine::assignBuffers(letter);
+				RenderingEngine::setBufferData(letter);
+				objects.push_back(letter);
+			}
+		}
+		curX += 0.3f;
+	}
+}
+
+std::vector<glm::vec3> Scene::elevateBezierCurve(MySegment s) {
+	const int MAX_DEG = 3;
+	std::vector<glm::vec3> ret;
+	int d = s.degree;
+	for (int i = 0; i <= d; i++) {
+		ret.push_back(glm::vec3(s.x[i], s.y[i], 0.0f));
+	}
+	while (d < MAX_DEG) {
+		d++;
+		std::vector<glm::vec3> tmp;
+		tmp.push_back(ret[0]);
+		for (int i = 1; i < ret.size(); i++) {
+			glm::vec3 v = glm::mix(ret[i-1], ret[i], 1.0f - float(i)/float(d));
+			tmp.push_back(v);
+		}
+		tmp.push_back(ret[1]);
+		ret = tmp;
+	}
+	return ret;
 }
 
 /**
@@ -190,10 +222,13 @@ void Scene::changeTo(int scene) {
 			drawFirst();
 			sceneName = "Part 1: Quadratic Bezier";
 			break;
-
 		case 2:
 			drawSecond();
 			sceneName = "Part 2: Cubic Bezier";
+			break;
+		case 3:
+			drawName();
+			sceneName = "Part 3: Drawing name";
 			break;
 	}
 

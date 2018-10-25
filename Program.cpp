@@ -132,6 +132,12 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 				scene->changeTo(2);
 				break;
 			}
+			case GLFW_KEY_3:
+			{
+				program->renderingEngine->curveType = 1;
+				scene->changeTo(3);
+				break;
+			}
 		}
 	}
 
