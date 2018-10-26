@@ -19,6 +19,7 @@
 class RenderingEngine;
 struct MyGlyph;
 struct MySegment;
+class GlyphExtractor;
 
 class Scene {
 public:
@@ -34,6 +35,10 @@ public:
 	void updateFrame(float secs);
 
 	void changeTo(int scene);
+
+	void nextFont();
+	void speedupScroll();
+	void slowdownScroll();
 
 	//Send geometry to the renderer
 	void displayScene();
@@ -61,6 +66,25 @@ private:
 	bool scrolling;
 
 	void deleteGeometries(std::vector<Geometry>& geometries);
+
+	int partNumber;
+
+	const std::vector<std::string> part2Fonts = {
+		"fonts/lora/Lora-Bold.ttf",
+		"fonts/source-sans-pro/SourceSansPro-Regular.otf",
+		"fonts/alex-brush/AlexBrush-Regular.ttf"
+	};
+
+	const std::vector<std::string> part3Fonts = {
+		"fonts/alex-brush/AlexBrush-Regular.ttf",
+		"fonts/inconsolata/Inconsolata.otf",
+		"fonts/source-sans-pro/SourceSansPro-Bold.otf",
+	};
+
+	int p2fid = 0;
+	int p3fid = 0;
+
+	GlyphExtractor glyphExtractor;
 };
 
 #endif /* SCENE_H_ */

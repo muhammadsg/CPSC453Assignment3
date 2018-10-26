@@ -21,6 +21,8 @@
 
 Scene* currentScene;
 
+int partNumber = 0;
+
 Program::Program() {
 	setupWindow();
 }
@@ -128,24 +130,49 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 			case GLFW_KEY_1:
 			{
+				partNumber = 1;
 				program->renderingEngine -> curveType = 2;
 				scene->changeTo(1);
 				break;
 			}
 			case GLFW_KEY_2:
 			{
+				partNumber = 2;
 				program->renderingEngine -> curveType = 3;
 				scene->changeTo(2);
 				break;
 			}
 			case GLFW_KEY_3:
 			{
+				partNumber = 3;
 				scene->changeTo(3);
 				break;
 			}
 			case GLFW_KEY_4:
 			{
+				partNumber = 4;
 				scene->changeTo(4);
+				break;
+			}
+			case GLFW_KEY_RIGHT:
+			{
+				if (partNumber == 3 || partNumber == 4) {
+					scene->nextFont();
+				}
+				break;
+			}
+			case GLFW_KEY_UP:
+			{
+				if (partNumber == 4) {
+					scene->speedupScroll();
+				}
+				break;
+			}
+			case GLFW_KEY_DOWN:
+			{
+				if (partNumber == 4) {
+					scene->slowdownScroll();
+				}
 				break;
 			}
 		}

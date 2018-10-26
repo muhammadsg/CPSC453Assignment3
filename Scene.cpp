@@ -23,7 +23,8 @@
 #include "GlyphExtractor.h"
 
 
-Scene::Scene(RenderingEngine* renderer) : renderer(renderer), pixelsPerSec(3), scrolling(false) {
+Scene::Scene(RenderingEngine* renderer) :
+	renderer(renderer), pixelsPerSec(3), scrolling(false), partNumber(0) {
 
 	//Does nothing related to openGL
 
@@ -164,15 +165,14 @@ void Scene::drawScrollingText() {
 	quadratics.clear();
 	cubics.clear();
 	glyphs.clear();
-	GlyphExtractor g;
-	g.LoadFontFile("fonts/alex-brush/AlexBrush-Regular.ttf");
 
-	const std::string text = "The quick brown fox jumps over the lazy dog.";
+	const float scaling = 0.50f;
+	const std::string text = "The quick brown fox jumps over the lazy dog. ";
 	float curX = 1.0f;
 	for (char c : text) {
-		MyGlyph glyph = g.ExtractGlyph(c);
+		MyGlyph glyph = glyphExtractor.ExtractGlyph(c);
 		glyphs.push_back({curX, glyph});
-		curX += glyph.advance;
+		curX += scaling * glyph.advance;
 	}
 }
 
@@ -180,18 +180,19 @@ void Scene::updateFrame(float secs) {
 	if (glyphs.empty() || !scrolling) {
 		return;
 	}
+	const float scaling = 0.50f;
 	float endX = 0.0f;
 	for (auto& glyphPair : glyphs) {
 		glyphPair.first -= secs * pixelsPerSec;
-		endX = std::max(endX, glyphPair.first + glyphPair.second.advance);
+		endX = std::max(endX, glyphPair.first + scaling * glyphPair.second.advance);
 	}
-	if (glyphs[0].first + glyphs[0].second.advance < -1.1f) {
-		glyphs[0].first = endX;
-		std::sort(glyphs.begin(), glyphs.end(),
-			[](std::pair<float, MyGlyph>& a, std::pair<float, MyGlyph>& b) {
-			return a.first < b.first;
-		});
-	}
+	// if (glyphs[0].first + glyphs[0].second.advance < -1.1f) {
+	// 	glyphs[0].first = endX;
+	// 	std::sort(glyphs.begin(), glyphs.end(),
+	// 		[](std::pair<float, MyGlyph>& a, std::pair<float, MyGlyph>& b) {
+	// 		return a.first < b.first;
+	// 	});
+	// }
 
 	deleteGeometries(lines);
 	deleteGeometries(quadratics);
@@ -203,7 +204,9 @@ void Scene::updateFrame(float secs) {
 			for(MySegment s : g.contours[i]) {
 				Geometry letter;
 				for (int k = 0; k <= s.degree; k++) {
-					letter.verts.push_back(glm::vec3(curX + s.x[k], s.y[k], 0.0f));
+					glm::vec3 v = scaling * glm::vec3(s.x[k], s.y[k], 0.0f);
+					v.x += curX;
+					letter.verts.push_back(v);
 					letter.colors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
 				}
 				RenderingEngine::assignBuffers(letter);
@@ -220,7 +223,7 @@ void Scene::updateFrame(float secs) {
 				}
 			}
 		}
-		curX += g.advance;
+		curX += g.advance * scaling;
 	}
 }
 
@@ -236,19 +239,21 @@ void Scene::drawName() {
 	quadratics.clear();
 	cubics.clear();
 
-	GlyphExtractor g;
-	g.LoadFontFile("fonts/alex-brush/AlexBrush-Regular.ttf");
 	const std::string name1 = "Mohammad";
 	const std::string name2 = "Tony";
 
 	float curX = -1.0f;
-	for (char c : name2) {
-		MyGlyph glyph = g.ExtractGlyph(c);
+	const float scaling = 0.35f;
+	for (char c : name1) {
+		MyGlyph glyph = glyphExtractor.ExtractGlyph(c);
 		for (unsigned int i = 0; i < glyph.contours.size(); i++) {
 			for(MySegment s : glyph.contours[i]) {
 				Geometry letter;
 				for (int k = 0; k <= s.degree; k++) {
-					letter.verts.push_back(glm::vec3(curX + s.x[k], s.y[k], 0.0f));
+					glm::vec3 v = scaling * glm::vec3(s.x[k], s.y[k], 0.0f);
+					v.x += curX;
+					v.y += 0.25f;
+					letter.verts.push_back(v);
 					letter.colors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
 				}
 				RenderingEngine::assignBuffers(letter);
@@ -265,8 +270,37 @@ void Scene::drawName() {
 				}
 			}
 		}
-		std::cout << glyph.advance << std::endl;
-		curX += glyph.advance;
+		curX += glyph.advance * scaling;
+	}
+
+	curX = -1.0f;
+	for (char c : name2) {
+		MyGlyph glyph = glyphExtractor.ExtractGlyph(c);
+		for (unsigned int i = 0; i < glyph.contours.size(); i++) {
+			for(MySegment s : glyph.contours[i]) {
+				Geometry letter;
+				for (int k = 0; k <= s.degree; k++) {
+					glm::vec3 v = scaling * glm::vec3(s.x[k], s.y[k], 0.0f);
+					v.x += curX;
+					v.y -= 0.25f;
+					letter.verts.push_back(v);
+					letter.colors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+				}
+				RenderingEngine::assignBuffers(letter);
+				RenderingEngine::setBufferData(letter);
+				if (s.degree == 1) {
+					letter.drawMode = GL_LINES;
+					lines.push_back(letter);
+				} else if (s.degree == 2) {
+					letter.drawMode = GL_PATCHES;
+					quadratics.push_back(letter);
+				} else {
+					letter.drawMode = GL_PATCHES;
+					cubics.push_back(letter);
+				}
+			}
+		}
+		curX += glyph.advance * scaling;
 	}
 }
 
@@ -280,6 +314,7 @@ void Scene::changeTo(int scene) {
 	// Change to new scene
 	sceneType = scene;
 	std::string sceneName;
+	std::string fontFile;
 	switch(scene) {
 		case 1:
 			drawFirst();
@@ -292,11 +327,17 @@ void Scene::changeTo(int scene) {
 			scrolling = false;
 			break;
 		case 3:
+			partNumber = 3;
+			fontFile = part2Fonts[p2fid];
+			glyphExtractor.LoadFontFile(fontFile);
 			drawName();
 			sceneName = "Part 3: Drawing name";
 			scrolling = false;
 			break;
 		case 4:
+			partNumber = 4;
+			fontFile = part3Fonts[p3fid];
+			glyphExtractor.LoadFontFile(fontFile);
 			drawScrollingText();
 			sceneName = "Part 4: Drawing scrolling text";
 			scrolling = true;
@@ -306,3 +347,24 @@ void Scene::changeTo(int scene) {
 	std::cout << "Changed to " + sceneName + " scene." << std::endl;
 }
 
+void Scene::nextFont() {
+	if (partNumber == 3) {
+		p2fid = (p2fid + 1) % 3;
+		std::string fontFile = part2Fonts[p2fid];
+		glyphExtractor.LoadFontFile(fontFile);
+		drawName();
+	} else if (partNumber == 4) {
+		p3fid = (p3fid + 1) % 3;
+		std::string fontFile = part3Fonts[p3fid];
+		glyphExtractor.LoadFontFile(fontFile);
+		drawScrollingText();
+	}
+}
+
+void Scene::speedupScroll() {
+	if (pixelsPerSec < 6.0f) pixelsPerSec += 0.5f;
+}
+
+void Scene::slowdownScroll() {
+	if (pixelsPerSec > 1.0f) pixelsPerSec -= 0.5f;
+}
