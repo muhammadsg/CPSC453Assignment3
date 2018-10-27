@@ -43,7 +43,6 @@ private:
 	//Geometry
 	Geometry quadraticBezier;
 	Geometry cubicBezier;
-	Geometry point;
 
 	//list of objects in the scene
 	std::vector<Geometry> objects;

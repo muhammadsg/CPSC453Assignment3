@@ -448,16 +448,6 @@ void Scene::changeTo(int scene) {
 			drawPolygon2();
 			sceneName = "Part 2: Cubic Bezier";
 			break;
-		case 3:
-			drawPoint1();
-			drawPolygon1();
-			sceneName = "Part 2: Quadratic Bezier with control points and polygons";
-			break;
-		case 4:
-			drawPoint2();
-			drawPolygon2();
-			sceneName = "Part 2: Quadratic Bezier with control points and polygons";
-			break;
 	}
 
 	std::cout << "Changed to " + sceneName + " scene." << std::endl;

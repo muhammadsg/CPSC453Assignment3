@@ -41,13 +41,11 @@ public:
 
 	GLuint location;
 	GLuint location2;
-	GLuint locationX;
-	GLuint locationY;
+
 
 	int curveType;
 	int shapeNum;
-	float xVal;
-	float yVal;
+
 };
 
 #endif /* RENDERINGENGINE_H_ */

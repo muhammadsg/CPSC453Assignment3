@@ -24,9 +24,6 @@ RenderingEngine::RenderingEngine() {
 
 
 location = glGetUniformLocation(shaderProgram, "curveType");
-location2 = glGetUniformLocation(shaderProgram, "shapeNum");
-locationX = glGetUniformLocation(shaderProgram, "xVal");
-locationY = glGetUniformLocation(shaderProgram, "yVal");
 
 }
 
@@ -70,9 +67,6 @@ void RenderingEngine::RenderScene(const std::vector<Geometry>& objects, const st
 	}
 
 	glUniform1i(location, curveType);
-	glUniform1i(location2, shapeNum);
-	glUniform1f(locationX, xVal);
-	glUniform1f(locationY, yVal);
 
 	for (const Geometry& g : objects) {
 		glBindVertexArray(g.vao);

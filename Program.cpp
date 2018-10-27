@@ -122,40 +122,17 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 			case GLFW_KEY_1:
 			{
-				program->renderingEngine-> shapeNum = 0;
 				program->renderingEngine -> curveType = 0;
-				program->renderingEngine -> xVal = 0.0;
-				program->renderingEngine -> yVal = 0.0;
 				scene->changeTo(1);
 				break;
 			}
 			case GLFW_KEY_2:
 			{
-				program->renderingEngine-> shapeNum = 1;
 				program->renderingEngine -> curveType = 1;
-				program->renderingEngine -> xVal = -0.4;
-				program->renderingEngine -> yVal = -0.1;
 				scene->changeTo(2);
 				break;
 			}
-			case GLFW_KEY_3:
-			{
-				program->renderingEngine-> shapeNum = 0;
-				program->renderingEngine -> curveType = 2;
-				program->renderingEngine -> xVal = 0.0;
-				program->renderingEngine -> yVal = 0.0;
-				scene->changeTo(3);
-				break;
-			}
-			case GLFW_KEY_4:
-			{
-				program->renderingEngine-> shapeNum = 1;
-				program->renderingEngine -> curveType = 2;
-				program->renderingEngine -> xVal = -0.4;
-				program->renderingEngine -> yVal = -0.1;
-				scene->changeTo(4);
-				break;
-			}
+		
 		}
 	}
 
