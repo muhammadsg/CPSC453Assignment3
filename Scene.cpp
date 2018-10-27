@@ -41,6 +41,10 @@ void Scene::displayScene() {
 }
 
 void Scene::drawPoint1() {
+	RenderingEngine::deleteBufferData(point);
+	point.verts.clear();
+	point.colors.clear();
+
 	point.verts.push_back(glm::vec3( 2.0f, -1.0f, 1.0f));
 	point.verts.push_back(glm::vec3( -2.0f, -1.0f, 1.0f));
 	point.verts.push_back(glm::vec3( 2.5f, 1.0f, 1.0f));
@@ -423,7 +427,6 @@ void Scene::drawScrollingText() {
 	quadratics.clear();
 	cubics.clear();
 	glyphs.clear();
-
 	const float scaling = 0.50f;
 	const std::string text = "The quick brown fox jumps over the lazy dog. ";
 	float curX = 1.0f;
@@ -496,7 +499,7 @@ void Scene::drawName() {
 	lines.clear();
 	quadratics.clear();
 	cubics.clear();
-
+	glyphs.clear();
 	const std::string name1 = "Muhammad";
 	const std::string name2 = "Tony";
 
@@ -568,6 +571,10 @@ void Scene::drawName() {
  */
 void Scene::changeTo(int scene) {
 	objects.clear();
+	lines.clear();
+	quadratics.clear();
+	cubics.clear();
+	glyphs.clear();
 
 	// Change to new scene
 	sceneType = scene;
