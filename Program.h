@@ -31,12 +31,15 @@ public:
 	Scene* getScene() {return scene;}
 	
 	RenderingEngine* renderingEngine;
+
+	void nextFont();
+	void prevFont();
 	
 private:
 	GLFWwindow* window;
 
 	Scene* scene;
-
+	
 };
 
 //Functions passed to GLFW to handle errors and keyboard input

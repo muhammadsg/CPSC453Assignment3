@@ -8,7 +8,6 @@ vec2 position;
 
 out vec3 color; //Color going forward to Fragment shader
 
-
 void main()
 {
 	float t = gl_TessCoord.x; // X TessCoord is u value in the spiral or given formula (for spiral was simply the angle around spiral)

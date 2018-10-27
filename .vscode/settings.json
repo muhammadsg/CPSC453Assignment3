@@ -32,6 +32,16 @@
         "type_traits": "cpp",
         "tuple": "cpp",
         "typeinfo": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "atomic": "cpp",
+        "complex": "cpp",
+        "cstdarg": "cpp",
+        "ctime": "cpp",
+        "deque": "cpp",
+        "iomanip": "cpp",
+        "memory": "cpp",
+        "numeric": "cpp",
+        "chrono": "cpp",
+        "ratio": "cpp"
     }
 }

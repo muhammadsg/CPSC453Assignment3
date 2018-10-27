@@ -9,6 +9,8 @@
 
 #include <iostream>
 #include <string>
+#include <chrono>
+#include <ctime>
 
 //**Must include glad and GLFW in this order or it breaks**
 #include <glad/glad.h>
@@ -18,6 +20,8 @@
 #include "Scene.h"
 
 Scene* currentScene;
+
+int partNumber = 0;
 
 Program::Program() {
 	setupWindow();
@@ -37,12 +41,16 @@ void Program::start() {
 	currentScene = scene;
 	scene->drawScene();
 
-
 	//Main render loop
 	while(!glfwWindowShouldClose(window)) {
+		auto start = std::chrono::system_clock::now();
 		scene->displayScene();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		auto end = std::chrono::system_clock::now();
+		std::chrono::duration<float> elapsed_seconds = end-start;
+		float seconds = elapsed_seconds.count();
+		scene->updateFrame(seconds);
 	}
 
 }
@@ -122,19 +130,52 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 			case GLFW_KEY_1:
 			{
-				program->renderingEngine -> curveType = 0;
+				partNumber = 1;
+				program->renderingEngine->curveType = 0;
 				scene->changeTo(1);
 				break;
 			}
 			case GLFW_KEY_2:
 			{
-				program->renderingEngine -> curveType = 1;
+				partNumber = 2;
+				program->renderingEngine->curveType = 1;
 				scene->changeTo(2);
 				break;
 			}
-		
+			case GLFW_KEY_3:
+			{
+				partNumber = 3;
+				scene->changeTo(3);
+				break;
+			}
+			case GLFW_KEY_4:
+			{
+				partNumber = 4;
+				scene->changeTo(4);
+				break;
+			}
+			case GLFW_KEY_RIGHT:
+			{
+				if (partNumber == 3 || partNumber == 4) {
+					scene->nextFont();
+				}
+				break;
+			}
+			case GLFW_KEY_UP:
+			{
+				if (partNumber == 4) {
+					scene->speedupScroll();
+				}
+				break;
+			}
+			case GLFW_KEY_DOWN:
+			{
+				if (partNumber == 4) {
+					scene->slowdownScroll();
+				}
+				break;
+			}
 		}
 	}
-
 }
 

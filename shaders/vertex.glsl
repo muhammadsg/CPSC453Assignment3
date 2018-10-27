@@ -18,7 +18,6 @@ out vec3 color; //Color goes to tesselation control shader
 
 void main()
 {
-    // assign vertex position without modification
     gl_Position = vec4(VertexPosition.xy, 0.0, 1.0);
 
     // assign output colour to be interpolated
