@@ -24,7 +24,7 @@ public:
 	virtual ~RenderingEngine();
 
 	//Renders each object
-	void RenderScene(const std::vector<Geometry>& objects);
+	void RenderScene(const std::vector<Geometry>& objects, const std::vector<Geometry>& polygonExtra, Geometry point);
 
 	//Create vao and vbos for objects
 	static void assignBuffers(Geometry& geometry);
@@ -37,9 +37,17 @@ public:
 	//Pointer to the current shader program being used to render
 	GLuint shaderProgram;
 	GLuint shaderProgram2;
+	GLuint shaderProgram3;
 
 	GLuint location;
+	GLuint location2;
+	GLuint locationX;
+	GLuint locationY;
+
 	int curveType;
+	int shapeNum;
+	float xVal;
+	float yVal;
 };
 
 #endif /* RENDERINGENGINE_H_ */

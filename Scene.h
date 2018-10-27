@@ -21,7 +21,10 @@ public:
 	Scene(RenderingEngine* renderer);
 	virtual ~Scene();
 
-	void drawPoint();
+	void drawPoint1();
+	void drawPoint2();
+	void drawPolygon1();
+	void drawPolygon2();
 	void drawScene();
 	void drawFirst();
 	void drawSecond();
@@ -40,10 +43,11 @@ private:
 	//Geometry
 	Geometry quadraticBezier;
 	Geometry cubicBezier;
-
+	Geometry point;
 
 	//list of objects in the scene
 	std::vector<Geometry> objects;
+	std::vector<Geometry> polygonExtra;
 };
 
 #endif /* SCENE_H_ */

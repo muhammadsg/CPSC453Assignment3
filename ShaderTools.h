@@ -20,6 +20,7 @@ namespace ShaderTools {
 	GLuint CompileShader(GLenum shaderType, const std::string &source);
 
 	GLuint LinkProgram(GLuint vertexShader, GLuint fragmentShader, GLuint tcsShader, GLuint tesShader);
+	GLuint LinkProgram(GLuint vertexShader, GLuint fragmentShader);
 
 	GLuint InitializeShaders(int curveType);
 

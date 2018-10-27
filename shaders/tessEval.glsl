@@ -14,7 +14,7 @@ void main()
 	float t = gl_TessCoord.x; // X TessCoord is u value in the spiral or given formula (for spiral was simply the angle around spiral)
 
 	vec3 startColour = teColour[2]; //Start color is green
-	vec3 endColour = teColour[1]; //End color is blue
+	vec3 endColour = teColour[1]; //End color is red
 
 	if (curveType == 0)
 	{
@@ -46,6 +46,6 @@ void main()
 
 	gl_Position = vec4(position, 0, 1);
 
-	color = (1-t)*startColour + t*endColour;
+	color = startColour;
 
 }

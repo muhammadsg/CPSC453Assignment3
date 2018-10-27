@@ -89,6 +89,33 @@ GLuint ShaderTools::LinkProgram(GLuint vertexShader, GLuint fragmentShader, GLui
 	return programObject;
 }
 
+// creates and returns a program object linked from vertex and fragment shaders
+GLuint ShaderTools::LinkProgram(GLuint vertexShader, GLuint fragmentShader) {
+	// allocate program object name
+	GLuint programObject = glCreateProgram();
+
+	// attach provided shader objects to this program
+	if (vertexShader)   glAttachShader(programObject, vertexShader);
+	if (fragmentShader) glAttachShader(programObject, fragmentShader);
+
+	// try linking the program with given attachments
+	glLinkProgram(programObject);
+
+	// retrieve link status
+	GLint status;
+	glGetProgramiv(programObject, GL_LINK_STATUS, &status);
+	if (status == GL_FALSE) {
+		GLint length;
+		glGetProgramiv(programObject, GL_INFO_LOG_LENGTH, &length);
+		std::string info(length, ' ');
+		glGetProgramInfoLog(programObject, info.length(), &length, &info[0]);
+		std::cout << "ERROR linking shader program:" << std::endl;
+		std::cout << info << std::endl;
+	}
+
+	return programObject;
+}
+
 GLuint ShaderTools::InitializeShaders(int curveType) {
 	// load shader source from files
 	std::string vertexSource = LoadSource("shaders/vertex.glsl");
@@ -110,6 +137,9 @@ GLuint ShaderTools::InitializeShaders(int curveType) {
 
 	if (curveType == 1)
 	program = LinkProgram(vertex, fragment, tcs2, tes);
+
+	if (curveType == 2)
+	program = LinkProgram(vertex, fragment);
 
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);

@@ -16,13 +16,17 @@ RenderingEngine::RenderingEngine() {
 	
 	shaderProgram = ShaderTools::InitializeShaders(0);
 	shaderProgram2 = ShaderTools::InitializeShaders(1);
-	if (shaderProgram == 0 | shaderProgram2 == 0) {
+	shaderProgram3 = ShaderTools::InitializeShaders(2);
+	if (shaderProgram == 0 | shaderProgram2 == 0 | shaderProgram3 == 0) {
 		std::cout << "Program could not initialize shaders, TERMINATING" << std::endl;
 		return;
 	}
 
 
 location = glGetUniformLocation(shaderProgram, "curveType");
+location2 = glGetUniformLocation(shaderProgram, "shapeNum");
+locationX = glGetUniformLocation(shaderProgram, "xVal");
+locationY = glGetUniformLocation(shaderProgram, "yVal");
 
 }
 
@@ -30,15 +34,34 @@ RenderingEngine::~RenderingEngine() {
 
 }
 
-void RenderingEngine::RenderScene(const std::vector<Geometry>& objects) {
+void RenderingEngine::RenderScene(const std::vector<Geometry>& objects, const std::vector<Geometry>& polygonExtra, Geometry point) {
 	//Clears the screen to a dark grey background
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	// bind our shader program and the vertex array object containing our
 	// scene geometry, then tell OpenGL to draw our geometry
-	glUseProgram(shaderProgram);
-	glPatchParameteri(GL_PATCH_VERTICES, 3); //Says, for vertices passed in; every 3 vertices should be interpreted as a patch (3 for quadratic, 4 for cubic)
+	glUseProgram(shaderProgram3);
+	
+	if (!polygonExtra.empty()) {
+		for (const Geometry& p : polygonExtra) {
+			glBindVertexArray(p.vao);
+			glDrawArrays(p.drawMode, 0, p.verts.size());
+			glBindVertexArray(0);
+		}
+	}
+
+	if (!point.verts.empty()) {
+		glBindVertexArray(point.vao);
+		glDrawArrays(point.drawMode, 0, point.verts.size());
+		glBindVertexArray(0);
+	}
+
+	if (curveType == 0)
+	{
+		glUseProgram(shaderProgram);
+		glPatchParameteri(GL_PATCH_VERTICES, 3); //Says, for vertices passed in; every 3 vertices should be interpreted as a patch (3 for quadratic, 4 for cubic)
+	}
 
 	if (curveType == 1)
 	{
@@ -47,6 +70,9 @@ void RenderingEngine::RenderScene(const std::vector<Geometry>& objects) {
 	}
 
 	glUniform1i(location, curveType);
+	glUniform1i(location2, shapeNum);
+	glUniform1f(locationX, xVal);
+	glUniform1f(locationY, yVal);
 
 	for (const Geometry& g : objects) {
 		glBindVertexArray(g.vao);
