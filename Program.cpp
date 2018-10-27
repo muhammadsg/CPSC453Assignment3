@@ -131,14 +131,14 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 			case GLFW_KEY_1:
 			{
 				partNumber = 1;
-				program->renderingEngine -> curveType = 2;
+				program->renderingEngine -> curveType = 1;
 				scene->changeTo(1);
 				break;
 			}
 			case GLFW_KEY_2:
 			{
 				partNumber = 2;
-				program->renderingEngine -> curveType = 3;
+				program->renderingEngine -> curveType = 2;
 				scene->changeTo(2);
 				break;
 			}

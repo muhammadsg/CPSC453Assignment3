@@ -186,13 +186,13 @@ void Scene::updateFrame(float secs) {
 		glyphPair.first -= secs * pixelsPerSec;
 		endX = std::max(endX, glyphPair.first + scaling * glyphPair.second.advance);
 	}
-	// if (glyphs[0].first + glyphs[0].second.advance < -1.1f) {
-	// 	glyphs[0].first = endX;
-	// 	std::sort(glyphs.begin(), glyphs.end(),
-	// 		[](std::pair<float, MyGlyph>& a, std::pair<float, MyGlyph>& b) {
-	// 		return a.first < b.first;
-	// 	});
-	// }
+	if (glyphs[0].first + glyphs[0].second.advance < -1.1f) {
+		glyphs[0].first = endX;
+		std::sort(glyphs.begin(), glyphs.end(),
+			[](std::pair<float, MyGlyph>& a, std::pair<float, MyGlyph>& b) {
+			return a.first < b.first;
+		});
+	}
 
 	deleteGeometries(lines);
 	deleteGeometries(quadratics);

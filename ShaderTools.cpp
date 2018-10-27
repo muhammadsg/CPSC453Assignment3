@@ -108,8 +108,8 @@ GLuint ShaderTools::InitializeShaders(int curveType) {
 	// link shader program
 	GLuint program;
 	
-	if (curveType == 2) program = LinkProgram(vertex, fragment, tcs, tes);
-	else if (curveType == 3) program = LinkProgram(vertex, fragment, tcs2, tes);
+	if (curveType == 1) program = LinkProgram(vertex, fragment, tcs, tes);
+	else if (curveType == 2) program = LinkProgram(vertex, fragment, tcs2, tes);
 	else program = LinkProgram(vertex, fragment, 0, 0);
 
 	glDeleteShader(vertex);

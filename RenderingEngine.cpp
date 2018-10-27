@@ -38,7 +38,7 @@ void RenderingEngine::RenderScene(const std::vector<Geometry>& objects) {
 	glUseProgram(shaderProgram);
 	glPatchParameteri(GL_PATCH_VERTICES, 3); //Says, for vertices passed in; every 3 vertices should be interpreted as a patch (3 for quadratic, 4 for cubic)
 
-	if (curveType == 3)
+	if (curveType == 2)
 	{
 		glUseProgram(shaderProgram2);
 		glPatchParameteri(GL_PATCH_VERTICES, 4); //Says, for vertices passed in; every 3 vertices should be interpreted as a patch (3 for quadratic, 4 for cubic)
@@ -79,7 +79,7 @@ void RenderingEngine::RenderLine(std::vector<Geometry>& objects) {
 void RenderingEngine::RenderQuadratic(std::vector<Geometry>& objects) {
 	glUseProgram(shaderProgram);
 	glPatchParameteri(GL_PATCH_VERTICES, 3);
-	glUniform1i(location, /*curveType=*/2);
+	glUniform1i(location, /*curveType=*/1);
 
 	for (Geometry& g : objects) {
 		glBindVertexArray(g.vao);
@@ -94,7 +94,7 @@ void RenderingEngine::RenderQuadratic(std::vector<Geometry>& objects) {
 void RenderingEngine::RenderCubic(std::vector<Geometry>& objects) {
 	glUseProgram(shaderProgram2);
 	glPatchParameteri(GL_PATCH_VERTICES, 4);
-	glUniform1i(location, /*curveType=*/3);
+	glUniform1i(location, /*curveType=*/2);
 
 	for (Geometry& g : objects) {
 		glBindVertexArray(g.vao);
